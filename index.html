@@ -1,9 +1,112 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    
     <title>San Francisco Crimes</title>
+    <script type="text/javascript" src="js/d3.js"></script>
+    
+    <!-- Bootstrap -->
+    <link href="css/style.css" rel="stylesheet">
   </head>
   <body>
-    <p>Nothing here for now</p>
+    <div class="heading">
+      <h1>San Francisco</h1>
+      <h2>A history of crimes</h2>
+    </div>
+    <div class="description">
+      <p>From January 2003 to December 2015, the percentage of crimes that were solved* 
+        has varied a lot, posibly increasing slightly until 2010, and from 2010 to 2015
+        it decreased from abount 44% to about 30%.</p>
+    </div>
+    <div class="visualization">
+      <svg version="1.1" viewBox="0 0 720 480" preserveAspectRatio="xMinYMin meet">
+        <script>
+          
+            var dataset = [];
+            var xScale;
+            var yScale;
+            var chart_w = 720;
+            var chart_h = 480;
+            var padding = 25;
+            var padding_left = 35;
+            var padding_right = 10;
+            d3.csv("data/daily_solved_crimes_smooth.csv", function(error, data) {
+
+              if (error) {  //If error is not null, something went wrong.
+                console.log(error);  //Log the error.
+              } else {      //If no error, the file loaded correctly. Yay!
+                dataset = data;
+                xScale = d3.time.scale()
+                     .domain([new Date(dataset[0]['dt']),new Date(dataset[dataset.length-1]['dt'])])
+                     .range([padding_left, chart_w-padding_right]);
+                yScale = d3.scale.linear()
+                     .domain([0, 65])
+                     .range([chart_h-padding, padding]);
+                var vis = d3.select("svg");
+                // scatterplot
+                vis.selectAll("circle")
+                .data(dataset)
+                .enter()
+                .append("circle")
+                .attr("class", "daily_crime_circle")
+                .attr("cx", function(d) {
+                  //console.log(d)
+                    return xScale(new Date(d['dt']));
+                })
+                .attr("cy", function(d) {
+                    return yScale(100*parseFloat(d['yes']) / (parseFloat(d['yes']) + parseFloat(d['no'])));
+                })
+                .attr("r", 1.2)
+                .attr("fill", "steelBlue");
+                // line
+                var lineFunc = d3.svg.line()
+                .x(function(d) {
+                  return xScale(new Date(d['dt']));
+                })
+                .y(function(d) {
+                  return yScale(parseFloat(d['smooth']));
+                })
+                .interpolate('linear');
+
+                vis.append('svg:path')
+                .attr('d', lineFunc(dataset))
+                .attr('stroke', 'black')
+                .attr('stroke-width', 1.5)
+                .attr('fill', 'none');
+                //axes
+                var xAxis = d3.svg.axis()
+                  .scale(xScale)
+                  .orient("bottom");
+                vis.append("g")
+                .attr("class", "axis x")
+                .attr("transform", "translate(0," + (chart_h - padding) + ")")
+                .call(xAxis);
+
+                var yAxis = d3.svg.axis()
+                  .scale(yScale)
+                  .orient("left")
+                  .ticks(5);
+
+                vis.append("g")
+                  .attr("class", "axis")
+                  .attr("transform", "translate(" + padding_left + ",0)")
+                  .call(yAxis);
+
+                //generateVis();
+                //hideLoadingMsg();
+              };
+            });
+        </script>
+      </svg>
+    </div>
+    <div class="notes">
+      <p><b>Note:</b> I consider a crime to be solved if it is recorded with a resolution 
+        different than <em>None</em>.
+      </p>
+    </div>
   </body>
 </html>
