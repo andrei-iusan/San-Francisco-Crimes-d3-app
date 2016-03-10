@@ -25,7 +25,7 @@ h1, h2{
 
 .visualization{
 	margin: 0 auto;
-	background: #eef2e0;
+	/*background: #eef2e0;*/
 }
 
 .notes{
@@ -45,6 +45,11 @@ h1, h2{
 }
 
 .daily_crime_circle{
-	fill-alpha:0.3;
-	
+	fill-opacity:0.5;
+}
+
+.chart_title{
+	text-align: center;
+	font-size: 16;
+	font-weight: 600;
 }

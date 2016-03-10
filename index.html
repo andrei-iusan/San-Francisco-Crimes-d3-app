@@ -20,7 +20,7 @@
     <div class="description">
       <p>From January 2003 to December 2015, the percentage of crimes that were solved* 
         has varied a lot, posibly increasing slightly until 2010, and from 2010 to 2015
-        it decreased from abount 44% to about 30%.</p>
+        it decreased from abount 44% to about 30%, with an increase in 2013 and first half of 2014.</p>
     </div>
     <div class="visualization">
       <svg version="1.1" viewBox="0 0 720 480" preserveAspectRatio="xMinYMin meet">
@@ -31,8 +31,9 @@
             var yScale;
             var chart_w = 720;
             var chart_h = 480;
-            var padding = 25;
-            var padding_left = 35;
+            var padding_top = 25;
+            var padding_bottom = 40;
+            var padding_left = 55;
             var padding_right = 10;
             d3.csv("data/daily_solved_crimes_smooth.csv", function(error, data) {
 
@@ -45,7 +46,7 @@
                      .range([padding_left, chart_w-padding_right]);
                 yScale = d3.scale.linear()
                      .domain([0, 65])
-                     .range([chart_h-padding, padding]);
+                     .range([chart_h-padding_bottom, padding_top]);
                 var vis = d3.select("svg");
                 // scatterplot
                 vis.selectAll("circle")
@@ -83,19 +84,45 @@
                   .orient("bottom");
                 vis.append("g")
                 .attr("class", "axis x")
-                .attr("transform", "translate(0," + (chart_h - padding) + ")")
+                .attr("transform", "translate(0," + (chart_h - padding_bottom) + ")")
                 .call(xAxis);
 
                 var yAxis = d3.svg.axis()
                   .scale(yScale)
                   .orient("left")
                   .ticks(5);
-
                 vis.append("g")
                   .attr("class", "axis")
                   .attr("transform", "translate(" + padding_left + ",0)")
                   .call(yAxis);
+                
+                vis.append("text")
+                  .attr("class","chart_title")
+                  .attr("text-anchor","middle")
+                  .attr("x",chart_w/2)
+                  .attr("y",30)
+                  .attr("width",chart_w)
+                  .attr("height",30)
+                  .text("Daily Percentage of Solved Crimes");
 
+                vis.append("text")
+                  .attr("class","chart_ylabel")
+                  .attr("text-anchor","middle")
+                  .attr("x",25)
+                  .attr("y",chart_h/2)
+                  .attr("width",chart_h)
+                  .attr("height",25)
+                  .attr("transform", "rotate(-90 "+ 25 +" "+ chart_h/2 +")")
+                  .text("Percent");
+
+                vis.append("text")
+                  .attr("class","chart_xlabel")
+                  .attr("text-anchor","middle")
+                  .attr("x",chart_w/2)
+                  .attr("y",chart_h-5)
+                  .attr("width",chart_h)
+                  .attr("height",25)
+                  .text("Time");
                 //generateVis();
                 //hideLoadingMsg();
               };
