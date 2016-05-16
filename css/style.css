@@ -66,10 +66,12 @@ sup {
 .vis_nav{
 	position: relative;
 	float: right;
-	display: inline-block; 
+	/*display: inline-block; */
+	display: none;
 	*display: inline; 
 	zoom: 1; 
 	vertical-align: top;
+	margin: 5px 20px;
 }
 
 .vis_nav .nav-button{
