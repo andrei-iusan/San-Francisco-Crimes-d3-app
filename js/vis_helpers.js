@@ -129,7 +129,9 @@ var NextPage=function(){
 var load_vis_page = function(page){
   if (page == 0){
     // hide svg
-    d3.select(".visualization").attr("style", "display:none;");
+    d3.select(".visualization").attr("style", "display:none;").select(".plot_area").selectAll("*").remove();
+    d3.select("#normalize-btn").attr("style", "background-color:white;");
+    normalized_btn = false;
     loadData(function(){
       loadPage(page);
     });
