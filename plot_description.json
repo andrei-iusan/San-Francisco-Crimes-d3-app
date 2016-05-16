@@ -1,0 +1,29 @@
+{
+	"descriptions":
+	[
+		"<p>
+			Data about crime activity in San Francisco is publicly available 
+	        starting from January 1st, 2003 at 
+	        <a href=\"http://data.sfgov.org\">data.sfgov.org</a>. 
+	        I explored this data set using R. My analysis can be found here:
+	        <a href=\"https://s3.amazonaws.com/andrei-iusan-ud-dand/P4_-_San_Francisco_Crimes_-_Andrei_Iusan.html\">
+	        San Francisco Crimes Investigation</a>
+        </p>
+        <p>
+	        In this presentation I will present an overview of crime activity
+	        in San Francisco.
+        </p>",
+		"How many of those crimes were solved?",
+		"Normalized number of crimes, percentage of solved crimes",
+		"Theft",
+		"Drugs"
+	],
+	"titles":
+	[
+		"A History of Crimes",
+		"Daily Number of Crimes",
+		"Theft",
+		"Drugs",
+		"Explore More Categories"
+	]
+}
