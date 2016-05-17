@@ -86,7 +86,6 @@ sup {
 
 .visualization{
 	margin: 0 auto;
-	/*background: #eef2e0;*/
 }
 
 #normalize-btn{
@@ -140,8 +139,3 @@ sup {
 	font-size: 16;
 	font-weight: 600;
 }
-
-/*#plot_description{
-	fill: #1A1A59;
-	font-family: 'Roboto Condensed', sans-serif;
-}*/

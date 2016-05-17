@@ -1,4 +1,4 @@
-var DEBUG = false;
+var DEBUG = false; // This affects performance!
 
 var dataset = [];
 var xScale;
@@ -9,14 +9,12 @@ var padding_top = 65;
 var padding_bottom = 40;
 var padding_left = 55;
 var padding_right = 10;
-// var averaging_window = 10;
-// var descriptions = [];
 var titles = [];
 var average_period = 30;
 var normalized_btn = false;
 var dataset0 = [];
 
-// line helper function
+// line helper functions
 var lineTotal = d3.svg.line()
   .x(function(d) {
     return xScale(new Date(d['Date']));
@@ -77,31 +75,21 @@ var lineSolvedPerc = d3.svg.line()
     })
   .interpolate('linear');
 
-// var sum = function(lst){
-//   lst.reduce(add, 0);
-// }
-
-// function add(a, b) {
-//     a = parseFloat(a);
-//     b = parseFloat(b);
-//     console.assert(typeof(a+b)=="number", "ERROR: can't add non-numeric values");
-//     return a + b;
-// }
 
 function smoothing(dataset, index, average_period, formula){
+  // takes the dataset, an index, average_period and a formula as input,
+  // and returns the average of "average_period" elements around dataset[index]
+  // it also takes a formula, such that the average can be performed on some 
+  // combinations of the variables in the dataset
   sum=0;
   cnt=0;
   for (i=index-parseInt(average_period/2); i<index-parseInt(average_period/2) + average_period; i++){
     if(i<0){
       sum += formula(dataset[-i]);
-      // parseInt(dataset[-i]["Solved"]) + parseInt(dataset[-i]["Not Solved"]);
     } else if(i>=dataset.length){
       sum += formula(dataset[2*dataset.length-i-1]);
-      // parseInt(dataset[2*dataset.length-i-1]["Solved"]) + 
-      //         parseInt(dataset[2*dataset.length-i-1]["Not Solved"]);
     } else {
       sum += formula(dataset[i]);
-      // parseInt(dataset[i]["Solved"]) + parseInt(dataset[i]["Not Solved"]);
     }
     cnt++;
   }
@@ -109,22 +97,6 @@ function smoothing(dataset, index, average_period, formula){
 }
 
 // visualization svg window
-
-var PrevPage=function(){
-  if (page>0){
-    d3.select(".page"+page).attr("style","display:none;");
-    page -= 1;
-  }
-  load_vis_page(page);
-};
-
-var NextPage=function(){
-  if (page<titles.length-1){
-    d3.select(".page"+page).attr("style","display:none;");
-    page += 1;
-  }
-  load_vis_page(page);
-}
 
 var load_vis_page = function(page){
   if (page == 0){
@@ -187,24 +159,6 @@ function drawChart(){
        .range([chart_h-padding_bottom, padding_top]);
   var vis = d3.select(".plot_area");
   
-  // append description
-  
-  // scatterplot
-  // vis.selectAll("circle")
-  // .data(dataset)
-  // .enter()
-  // .append("circle")
-  // .attr("class", "daily_crime_circle")
-  // .attr("cx", function(d) {
-  //   //console.log(d)
-  //   return xScale(new Date(d['Date']));
-  // })
-  // .attr("cy", function(d) {
-  //     return yScale(parseFloat(d['Solved']) + parseFloat(d['Not Solved']));
-  // })
-  // .attr("r", 1.2)
-  // .attr("fill", "steelBlue");
-
   // line of total crimes
   vis.append('svg:path')
   .attr('d', lineTotal(dataset))
@@ -214,6 +168,7 @@ function drawChart(){
   vis.append('svg:path')
   .attr('d', lineSolved(dataset0))
   .attr('class','lineplot solved_crimes');
+
   //axes
   var xAxis = d3.svg.axis()
     .scale(xScale)
@@ -232,15 +187,6 @@ function drawChart(){
     .attr("transform", "translate(" + padding_left + ",0)")
     .call(yAxis);
   
-  // vis.append("text")
-  //   .attr("class","chart_title")
-  //   .attr("text-anchor","middle")
-  //   .attr("x",chart_w/2)
-  //   .attr("y",70)
-  //   .attr("width",chart_w)
-  //   .attr("height",30)
-  //   .text("Daily Percentage of Solved Crimes");
-
   vis.append("text")
     .attr("class","chart_ylabel")
     .attr("text-anchor","middle")
@@ -260,6 +206,7 @@ function drawChart(){
     .attr("height",25)
     .text("Time");
 
+  // display legend
   vis.append("g")
     .attr("class", "legend")
     .attr("x",10)
@@ -331,8 +278,6 @@ function mutateChart(){
     lineSolvedPlot.attr('d', lineSolved(dataset0));
     d3.select(".chart_ylabel").transition().duration(500).text("Number of crimes");
   }
-
-
 }
 
 function loadPage(page){
@@ -341,108 +286,5 @@ function loadPage(page){
   .text(titles[page]);
   // update description
   d3.select(".page"+page).attr("style","display:block;");
-  // if (page>0){
-  //   drawChart();
-  // }
-  // call drawChart
-  // d3.csv("data/daily_solved_crimes_smooth.csv", function(error, data) {
-  //     if (error) {  //If error is not null, something went wrong.
-  //       console.log(error);  //Log the error.
-  //     } else {      //If no error, the file loaded correctly. Yay!
-  //       dataset = data;
-  //       d3.json("plot_description.json", function(error, data) {
-  //         if (error) {  //If error is not null, something went wrong.
-  //           console.log(error);  //Log the error.
-  //         } else {      //If no error, the file loaded correctly. Yay!
-  //           //descriptions = data;
-  //           xScale = d3.time.scale()
-  //                .domain([new Date(dataset[0]['dt']),
-  //                 new Date(dataset[dataset.length-1]['dt'])])
-  //                .range([padding_left, chart_w-padding_right]);
-  //           yScale = d3.scale.linear()
-  //                .domain([0, 65])
-  //                .range([chart_h-padding_bottom, padding_top]);
-  //           var vis = d3.select(".plot_area");
-  //           vis.selectAll("*").remove();
-  //           // append description
-  //           vis.append("text")
-  //           .text(descriptions[page])
-  //           .attr("id","plot_description")
-  //           .attr("x",padding_left)
-  //           .attr("y",20);
-  //           // create smooth line
-
-  //           // scatterplot
-  //           vis.selectAll("circle")
-  //           .data(dataset)
-  //           .enter()
-  //           .append("circle")
-  //           .attr("class", "daily_crime_circle")
-  //           .attr("cx", function(d) {
-  //             //console.log(d)
-  //               return xScale(new Date(d['dt']));
-  //           })
-  //           .attr("cy", function(d) {
-  //               return yScale(100*parseFloat(d['yes']) / (parseFloat(d['yes']) + parseFloat(d['no'])));
-  //           })
-  //           .attr("r", 1.2)
-  //           .attr("fill", "steelBlue");
-
-  //           vis.append('svg:path')
-  //           .attr('d', lineTotal(dataset))
-  //           .attr('stroke', 'black')
-  //           .attr('stroke-width', 1.5)
-  //           .attr('fill', 'none');
-  //           //axes
-  //           var xAxis = d3.svg.axis()
-  //             .scale(xScale)
-  //             .orient("bottom");
-  //           vis.append("g")
-  //           .attr("class", "axis x")
-  //           .attr("transform", "translate(0," + (chart_h - padding_bottom) + ")")
-  //           .call(xAxis);
-
-  //           var yAxis = d3.svg.axis()
-  //             .scale(yScale)
-  //             .orient("left")
-  //             .ticks(5);
-  //           vis.append("g")
-  //             .attr("class", "axis")
-  //             .attr("transform", "translate(" + padding_left + ",0)")
-  //             .call(yAxis);
-            
-  //           vis.append("text")
-  //             .attr("class","chart_title")
-  //             .attr("text-anchor","middle")
-  //             .attr("x",chart_w/2)
-  //             .attr("y",70)
-  //             .attr("width",chart_w)
-  //             .attr("height",30)
-  //             .text("Daily Percentage of Solved Crimes");
-
-  //           vis.append("text")
-  //             .attr("class","chart_ylabel")
-  //             .attr("text-anchor","middle")
-  //             .attr("x",25)
-  //             .attr("y",chart_h/2)
-  //             .attr("width",chart_h)
-  //             .attr("height",25)
-  //             .attr("transform", "rotate(-90 "+ 25 +" "+ chart_h/2 +")")
-  //             .text("Percent");
-
-  //           vis.append("text")
-  //             .attr("class","chart_xlabel")
-  //             .attr("text-anchor","middle")
-  //             .attr("x",chart_w/2)
-  //             .attr("y",chart_h-5)
-  //             .attr("width",chart_h)
-  //             .attr("height",25)
-  //             .text("Time");
-  //           //generateVis();
-  //           //hideLoadingMsg();
-  //         };
-  //       });
-  //     };
-  //   });
 }
 
