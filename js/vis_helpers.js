@@ -75,7 +75,6 @@ var lineSolvedPerc = d3.svg.line()
     })
   .interpolate('linear');
 
-
 function smoothing(dataset, index, average_period, formula){
   // takes the dataset, an index, average_period and a formula as input,
   // and returns the average of "average_period" elements around dataset[index]
@@ -274,7 +273,6 @@ function mutateChart(){
     d3.select(".axis.y").transition().duration(500)
     .call(yAxis);
     lineTotalPlot.attr('d', lineTotal(dataset));
-    // lineTotalPlot.exit().remove();
     lineSolvedPlot.attr('d', lineSolved(dataset0));
     d3.select(".chart_ylabel").transition().duration(500).text("Number of crimes");
   }
