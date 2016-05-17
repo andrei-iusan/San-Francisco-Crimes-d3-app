@@ -40,24 +40,6 @@
       </nav>
     </div>
 
-    <div class="description page0">
-      <p>
-        Data about crime activity in San Francisco is publicly available 
-        starting from January 1st, 2003 at 
-        <a href="http://data.sfgov.org">data.sfgov.org</a>. This data comes from 
-        the San Francisco Police Department system.</p>
-      <p>
-        I explored this data set using R. My analysis can be found here:<br/>
-        <a href="https://s3.amazonaws.com/andrei-iusan-ud-dand/P4_-_San_Francisco_Crimes_-_Andrei_Iusan.html">
-        San Francisco Crimes Investigation</a>
-      </p>
-      <p>
-        Here you can find a summary of my findings.
-        You can navigate through the presentation using the arrows positioned
-        next to the title.
-      </p>
-    </div>
-
     <div class="description page1">
       <p> This plot represents the number of crimes per day, averaged over 
         30 days.</p>
@@ -70,43 +52,8 @@
       <p> On the normalized plot we see this increase in crime activity
         combined with the relative stable number of solved crimes translated
         in a decrease in the percentage of solved crimes, especially in 2015.</p>
-      
-    </div>
-
-    <div class="description page2">
-      <p> This is the same type of chart, but the data is filtered for the 
-        "Larceny/Theft" category. Note that this is a very common type of crime,
-        and it became more common in the last years.</p>
-      <p> You can normalize this graphic like the previous one, and also superimpose 
-        the total number of crimes.</p>
-      <p> You can see that theft accounts for a lot of variability 
-        in the total number of crimes.</p>
     </div>
     
-    <div class="description page3">
-      <p> Now let's have a look at the evolution of drug related crimes.
-        This is also a very common crime, it's the 6<sup>th</sup> most 
-        common crime. I chosed to present this category because like theft,
-        the number of drug related crimes changed drastically in the last few 
-        years. In this case, however, the number of crimes decreased in the 
-        last years.</p>
-      <p> Note that the percentage of solved crimes in this category 
-        is very high.</p>
-    </div>
-
-    <div class="description page4">
-      <p> The combination of increasing theft activity and decreasing drug
-        activity led to the result we saw in the overview of all crimes, that
-        the percentage of solved crimes dropped from 2014 to 2015. </p>
-      <p> We can see now that the situation is not due to a change in the way
-        police handels crimes, but due to the changing of the number of crimes
-        in certain categories (particularly increased theft activity) that are
-        difficult to solve.</p>
-      <p>
-        You can now explore other categories and see how common those 
-        categories are and how they evolved in time.</p>
-    </div>
-
     <div class="visualization">
       <button class="button" id="normalize-btn" onclick="normalizeBtnClick()">
         normalize</button>
