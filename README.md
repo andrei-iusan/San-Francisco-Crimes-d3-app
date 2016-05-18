@@ -2,24 +2,38 @@
 
  ## Summary 
 
-This is an overview of criminal activity in San Francisco from January 2003 
-to December 2015. It shows the variation of the total number of crimes per day
-for the period mentioned. This is a very general overview, more insight can be
-found by reading my exploratory analysis of the same dataset: 
+This is an overview of theft activity in San Francisco from January 2003 
+to December 2015. It shows the variation of the number of thefts per day
+for the period mentioned. We can see the number of thefts per day was 
+stable at about 70 thefts per day, but started to increase from 2012, and
+it reached 100 thefts per day in 2014-2015. Also, as theft became more
+common, less cases were solved by the police.
+
+More insight can be found by reading my exploratory 
+analysis of the same dataset: 
 [San Francisco Crimes Investigation](https://s3.amazonaws.com/andrei-iusan-ud-dand/P4_-_San_Francisco_Crimes_-_Andrei_Iusan.html)
 
 ## Design
 
-I chose a simple line plot for the number of crimes. The line is smoothed over
-a period of 30 days. I added the smoothing because there are a lot of data 
-points and the variability is quite high.
-
 My first attempt was to show the proportion of solved crimes, and to 
 superimpose the individual values as dim colored circles, on top of a line
-plot of the average proportion of solfed crimes.
+plot of the average proportion of solved crimes. The idea was to get a sense
+of both the trend and the variability of the data.
+
+I chose a simple line plot for the number of crimes. Since this is a time
+series data, a line plot is the most apropriate because we can see variations
+from one day to the other. The line is smoothed over a period of 60 days. I 
+added the smoothing because there are a lot of data points and the variability
+is quite high.
 
 After the first feedback I decided it would be much clearer to start with the
 number of crimes and let the user swich to the normalized version of the plot.
+Also, the trend is more interesting, so I decided to leave out the individual
+values.
+
+My third iteration contains only the theft crimes. It is the same type of
+visualization, but it only shows the theft crimes. I decided to use this data,
+as here we can see a more specific trend.
 
 ## Feedback
 

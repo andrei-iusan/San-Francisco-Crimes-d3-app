@@ -93,7 +93,7 @@ sup {
     color: black;
     padding: 10px 20px;
     margin: 10px 40px;
-    border: 2px solid #2E2270;
+    border: 2px solid #135B00;
 }
 
 .axis path,
@@ -117,7 +117,7 @@ sup {
 }
 
 .legend .lineplot.solved_crimes{
-	stroke: #2E2270;
+	stroke: #51A83A;
 	stroke-width: 4;
 }
 .lineplot.total_crimes{
@@ -127,9 +127,9 @@ sup {
 }
 
 .lineplot.solved_crimes{
-	stroke: #140A4B;
+	stroke: #135B00;
 	stroke-width: 1;
-	fill: #A79FD1;
+	fill: #B6E7A8;
 }
 
 

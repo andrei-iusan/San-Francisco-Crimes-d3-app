@@ -1,6 +1,9 @@
 var DEBUG = false; // This affects performance!
 
 var dataset = [];
+var _dataset_ = []; // same dataset, but padded with 2 extra values
+                    // using those values I can fill the area under the line.
+var dataset_theft = []; //at the moment I have theft data in a different dataset
 var xScale;
 var yScale;
 var chart_w = 720;
@@ -12,9 +15,10 @@ var padding_right = 10;
 var titles = [];
 var average_period = 30;
 var normalized_btn = false;
-var dataset0 = [];
 
 // line helper functions
+
+// renders line of total number of crimes
 var lineTotal = d3.svg.line()
   .x(function(d) {
     return xScale(new Date(d['Date']));
@@ -29,6 +33,7 @@ var lineTotal = d3.svg.line()
     })
   .interpolate('linear');
 
+// renders line of number of solved crimes
 var lineSolved = d3.svg.line()
   .x(function(d) {
     return xScale(new Date(d['Date']));
@@ -40,7 +45,6 @@ var lineSolved = d3.svg.line()
       return yScale(0);
     }
     average = smoothing(dataset, index, average_period, function(d){
-      
       return parseInt(d["Solved"]);
     });
     DEBUG ? console.log("average point for "+ d['Date'] + ": "+average) : null;
@@ -48,6 +52,7 @@ var lineSolved = d3.svg.line()
     })
   .interpolate('linear');
 
+// renders line of percentage of total number of crimes (100%)
 var lineTotalPerc = d3.svg.line()
   .x(function(d) {
     return xScale(new Date(d['Date']));
@@ -57,6 +62,7 @@ var lineTotalPerc = d3.svg.line()
     })
   .interpolate('linear');
 
+// renders line of percentage of solved crimes
 var lineSolvedPerc = d3.svg.line()
   .x(function(d) {
     return xScale(new Date(d['Date']));
@@ -75,11 +81,12 @@ var lineSolvedPerc = d3.svg.line()
     })
   .interpolate('linear');
 
+
 function smoothing(dataset, index, average_period, formula){
-  // takes the dataset, an index, average_period and a formula as input,
-  // and returns the average of "average_period" elements around dataset[index]
+  // returns the average of "average_period" elements around dataset[index]
   // it also takes a formula, such that the average can be performed on some 
-  // combinations of the variables in the dataset
+  // combination of the variables in the dataset, since dataset[index] is 
+  // an object, containing multiple variables
   sum=0;
   cnt=0;
   for (i=index-parseInt(average_period/2); i<index-parseInt(average_period/2) + average_period; i++){
@@ -96,7 +103,6 @@ function smoothing(dataset, index, average_period, formula){
 }
 
 // visualization svg window
-
 var load_vis_page = function(page){
   if (page == 0){
     // hide svg
@@ -115,9 +121,10 @@ var load_vis_page = function(page){
 };
 
 function normalizeBtnClick(){
+  // apply changes when the "normalize" button is pressed
   normalized_btn = !normalized_btn;
   if (normalized_btn){
-    d3.select("#normalize-btn").attr("style", "background-color:#A79FD1;");
+    d3.select("#normalize-btn").attr("style", "background-color:#B6E7A8;");
   }
   else {
     d3.select("#normalize-btn").attr("style", "background-color:white;");
@@ -135,40 +142,42 @@ function loadData(callback){
       callback();
     }
   });
-  d3.csv("data/all.csv", function(error, data) {
+  d3.csv("data/LARCENY_THEFT.csv", function(error, data) {
     if (error) {  //If error is not null, something went wrong.
       DEBUG ? console.log(error) : null;  //Log the error.
     } else {      //If no error, the file loaded correctly. Yay!
       dataset = data;
-      dataset0 = [{'i':0,'Date':dataset[0]['Date']}]
+      _dataset_ = [{'i':0,'Date':dataset[0]['Date']}]
                           .concat(dataset)
                           .concat([{'i':dataset.length+1,'Date':dataset[dataset.length-1]['Date']}]);
-      drawChart();
+          drawChart();
     }
   });
 }
 
+  // render the visualization
 function drawChart(){
+  // scales
   xScale = d3.time.scale()
        .domain([new Date(dataset[0]['Date']),
         new Date(dataset[dataset.length-1]['Date'])])
        .range([padding_left, chart_w-padding_right]);
   yScale = d3.scale.linear()
-       .domain([0, 450])
+       .domain([0, 120])
        .range([chart_h-padding_bottom, padding_top]);
   var vis = d3.select(".plot_area");
   
-  // line of total crimes
+  // line of total thefts
   vis.append('svg:path')
   .attr('d', lineTotal(dataset))
   .attr('class','lineplot total_crimes');
 
-  // line of solved crimes
+  // line of solved thefts
   vis.append('svg:path')
-  .attr('d', lineSolved(dataset0))
+  .attr('d', lineSolved(_dataset_))
   .attr('class','lineplot solved_crimes');
 
-  //axes
+  // axes
   var xAxis = d3.svg.axis()
     .scale(xScale)
     .orient("bottom");
@@ -180,12 +189,13 @@ function drawChart(){
   var yAxis = d3.svg.axis()
     .scale(yScale)
     .orient("left")
-    .ticks(9);
+    .ticks(10);
   vis.append("g")
     .attr("class", "axis y")
     .attr("transform", "translate(" + padding_left + ",0)")
     .call(yAxis);
   
+  // axes labels
   vis.append("text")
     .attr("class","chart_ylabel")
     .attr("text-anchor","middle")
@@ -194,7 +204,7 @@ function drawChart(){
     .attr("width",chart_h)
     .attr("height",25)
     .attr("transform", "rotate(-90 "+ 20 +" "+ chart_h/2 +")")
-    .text("Number of crimes");
+    .text("Number of thefts");
 
   vis.append("text")
     .attr("class","chart_xlabel")
@@ -227,7 +237,7 @@ function drawChart(){
     .append("text")
     .attr("x", 15)
     .attr("y", 10)
-    .text("all crimes");
+    .text("all thefts");
   legend.append("g")
     .attr("class", "solved_crimes")
     .attr("height", 10)
@@ -240,7 +250,7 @@ function drawChart(){
     .append("text")
     .attr("x", 15)
     .attr("y", 10)
-    .text("solved crimes");
+    .text("solved thefts");
 }
 
 function mutateChart(){
@@ -248,33 +258,34 @@ function mutateChart(){
   var svg = d3.select(".plot_area").transition().duration(500);
   var lineTotalPlot = svg.select(".lineplot.total_crimes");
   var lineSolvedPlot = svg.select(".lineplot.solved_crimes");
+
   if (normalized_btn){
     yScale = d3.scale.linear()
-         .domain([0, 100])
+         .domain([0, 20])
          .range([chart_h-padding_bottom, padding_top]);
     var yAxis = d3.svg.axis()
       .scale(yScale)
-      .ticks(10)
+      .ticks(5)
       .orient("left");
     d3.select(".axis.y").transition().duration(500)
     .call(yAxis);
     lineTotalPlot.attr('d', lineTotalPerc(dataset));
-    lineSolvedPlot.attr('d', lineSolvedPerc(dataset0));
-    d3.select(".chart_ylabel").transition().duration(500).text("Percent");
+    lineSolvedPlot.attr('d', lineSolvedPerc(_dataset_));
+    d3.select(".chart_ylabel").transition().duration(500).text("Percent of solved thefts");
     
   } else {
     yScale = d3.scale.linear()
-         .domain([0, 450])
+         .domain([0, 120])
          .range([chart_h-padding_bottom, padding_top]);
     var yAxis = d3.svg.axis()
       .scale(yScale)
-      .ticks(9)
+      .ticks(12)
       .orient("left");
     d3.select(".axis.y").transition().duration(500)
     .call(yAxis);
     lineTotalPlot.attr('d', lineTotal(dataset));
-    lineSolvedPlot.attr('d', lineSolved(dataset0));
-    d3.select(".chart_ylabel").transition().duration(500).text("Number of crimes");
+    lineSolvedPlot.attr('d', lineSolved(_dataset_));
+    d3.select(".chart_ylabel").transition().duration(500).text("Number of thefts");
   }
 }
 
